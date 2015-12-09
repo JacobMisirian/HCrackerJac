@@ -1,0 +1,33 @@
+use IO;
+use Math;
+
+class HashCracker {
+	func new (hash, salt, dictionaryLocation) {
+		this.Hash = hash;
+		this.Salt = (salt == "") ? null : salt;
+		this.Dictionary = dictionaryLocation;
+	}
+
+	func dictionaryAttack (this) {
+		sr = new StreamReader(this.Dictionary);
+		res = "";
+		if (this.Salt == "") {
+			while (!sr.endOfStream()) {
+				entry = sr.readLine();
+				if (this.md5(entry) == this.Hash)
+					res = entry;
+			}
+		} else {
+			while (!sr.endOfStream()) {
+				entry = sr.readLine();
+				if (this.md5(this.md5(this.Salt) + this.md5(entry)) == this.Hash)
+					res = entry;
+			}
+		}
+		return res;
+	}
+
+	func md5 (this, string) {
+		return Math.hash("MD5", string);
+	}
+}

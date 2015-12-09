@@ -1,0 +1,28 @@
+use IO;
+use "HashCracker.has";
+
+filePath = args[0];
+dictionaryPath = args[1];
+
+func main () {
+	foreach (entry in File.readLines(filePath)) {
+		entry = entry.trim();
+		if (entry.startsWith("#") || entry == "" || entry == "\n" || entry == null)
+			continue;
+		parts = entry.split(" ");
+		if (parts.length == 2)
+			unsalted(parts[0], parts[1]);
+		else if (parts.length == 3)
+			salted(parts[0], parts[1], parts[2]);
+	}
+}
+
+func unsalted (name, hash) {
+	crack = new HashCracker(hash, "", dictionaryPath);
+	println(name + " password " + crack.dictionaryAttack());
+}
+
+func salted (name, salt, hash) {
+	crack = new HashCracker(hash, salt, dictionaryPath);
+	println(name + " password " + crack.dictionaryAttack());
+}
